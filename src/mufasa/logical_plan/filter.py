@@ -1,6 +1,6 @@
+from mufasa.logical_plan.base import LogicalPlan
 
-
-class Filter:
+class Filter(LogicalPlan):
     def __init__(self, plan, expr):
         self.plan = plan
         self.expr = expr

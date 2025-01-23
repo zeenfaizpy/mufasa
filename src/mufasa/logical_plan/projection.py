@@ -1,6 +1,7 @@
+from mufasa.logical_plan.base import LogicalPlan
 from mufasa.datatypes.schema import Schema
 
-class Projection:
+class Projection(LogicalPlan):
     def __init__(self, plan, expr):
         self.plan = plan
         self.expr = expr

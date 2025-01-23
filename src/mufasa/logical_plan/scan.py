@@ -1,10 +1,12 @@
+from mufasa.logical_plan.base import LogicalPlan
 
 
-class Scan:
+class Scan(LogicalPlan):
     def __init__(self, filepath, datasource, projection):
         self.filepath = filepath
         self.datasource = datasource
         self.projection = projection
+        self.plan = None
 
     def schema(self):
         pass
