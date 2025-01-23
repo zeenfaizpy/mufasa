@@ -9,13 +9,10 @@ class Scan(LogicalPlan):
         self.plan = None
 
     def schema(self):
-        pass
+       return self.datasource.schema()
 
     def children(self):
         return []
 
     def __repr__(self):
-        if self.projection:
-            return f"Scan: {self.filepath}; projection=None"
-        else:
-            return f"Scan: {self.filepath}; projection={self.projection}"
+        return f"Scan: {self.filepath}; projection={self.projection}"

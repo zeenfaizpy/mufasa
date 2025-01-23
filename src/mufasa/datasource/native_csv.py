@@ -1,6 +1,5 @@
 import csv
 import pyarrow as pa
-import pyarrow.csv
 from mufasa.datatypes.schema import Field, Schema
 
 class CSVDataSource:
@@ -12,15 +11,20 @@ class CSVDataSource:
     def schema(self):
         return self.infer_schema()
     
-    def scan(self):
-        read_options = pyarrow.csv.ReadOptions()
-        read_options.block_size = 4
-        with pyarrow.csv.open_csv(self.filename) as reader:
-            for next_chunk in reader:
-                if next_chunk is None:
-                    break
-                else:
-                    yield next_chunk
+    def scan(self, projection=None):
+        schema = self.schema().to_arrow()
+        with open(self.filename) as csvfile:
+            reader = csv.reader(csvfile)
+            
+            chunk = []
+            for index, line in enumerate(reader):
+                if index == 0 and self.has_headers:
+                    continue
+                if index > 0 and (index % self.batch_size == 0):
+                    yield pa.record_batch(line, schema=schema)
+                    chunk = []
+                chunk.append(line)
+            yield chunk
     
     def infer_schema(self):
         with open(self.filename) as csvfile:

@@ -7,7 +7,7 @@ class Column:
         self.name = name
     
     def to_field(self, plan):
-        results = plan.schema().fields.filter(lambda item: item.name == self.name)
+        results = list(filter(lambda item: item.name == self.name, plan.schema().fields))
         if results:
             return results[0]
         else:
