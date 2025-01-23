@@ -6,8 +6,8 @@ class Column:
     def __init__(self, name):
         self.name = name
     
-    def to_field(self, input):
-        results = input.schema().fields.filter(lambda item: item.name == self.name)
+    def to_field(self, plan):
+        results = plan.schema().fields.filter(lambda item: item.name == self.name)
         if results:
             return results[0]
         else:
@@ -21,7 +21,7 @@ class LiteralString:
     def __init__(self, value):
         self.value = value
     
-    def to_field(self, input):
+    def to_field(self, plan):
         return Field(self.value, pa.string())
     
     def __repr__(self):
@@ -32,7 +32,7 @@ class LiteralFloat:
     def __init__(self, value):
         self.value = value
     
-    def to_field(self, input):
+    def to_field(self, plan):
         return Field(self.value, pa.float32())
     
     def __repr__(self):
@@ -46,7 +46,7 @@ class BooleanBinaryExpr:
         self.left = left
         self.right = right
     
-    def to_field(self, input):
+    def to_field(self, plan):
         return Field(self.name, pa.bool_())
 
     def __repr__(self):

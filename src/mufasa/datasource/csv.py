@@ -19,5 +19,3 @@ class CSVDataSource:
                     chunk = []
                 chunk.append(line)
             yield chunk
-
-

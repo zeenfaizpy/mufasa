@@ -18,7 +18,7 @@ ctx = ExecutionContext()
 df = (
     ctx.csv("employee.csv")
     .filter(eq(col("state"), lit("TN")))
-    .project([col('state')])
+    .select(col('state'), col('first_name'), col('last_name'))
 )
 df.show_plan()
 ```
