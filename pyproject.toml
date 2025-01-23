@@ -3,8 +3,19 @@ name = "mufasa"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
+authors = [
+    { name = "Mohammad Faizal", email = "zeenfaiz@gmail.com" }
+]
 requires-python = ">=3.13"
 dependencies = [
-    "ipython>=8.31.0",
     "pyarrow>=19.0.0",
 ]
+
+[dependency-groups]
+dev = [
+    "ipython>=8.31.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

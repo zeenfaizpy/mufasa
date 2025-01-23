@@ -84,17 +84,21 @@ wheels = [
 [[package]]
 name = "mufasa"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
-    { name = "ipython" },
     { name = "pyarrow" },
 ]
 
-[package.metadata]
-requires-dist = [
-    { name = "ipython", specifier = ">=8.31.0" },
-    { name = "pyarrow", specifier = ">=19.0.0" },
+[package.dev-dependencies]
+dev = [
+    { name = "ipython" },
 ]
+
+[package.metadata]
+requires-dist = [{ name = "pyarrow", specifier = ">=19.0.0" }]
+
+[package.metadata.requires-dev]
+dev = [{ name = "ipython", specifier = ">=8.31.0" }]
 
 [[package]]
 name = "parso"

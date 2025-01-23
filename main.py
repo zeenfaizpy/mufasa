@@ -1,5 +1,5 @@
-from core import ExecutionContext
-from core.functions import col, eq, lit
+from mufasa.core import ExecutionContext
+from mufasa.core.functions import col, eq, lit
 
 
 def main():

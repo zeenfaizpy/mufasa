@@ -1,5 +1,5 @@
-from logical_plan.projection import *
-from logical_plan.filter import *
+from mufasa.logical_plan.projection import *
+from mufasa.logical_plan.filter import *
 
 
 class DataFrame:

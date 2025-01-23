@@ -1,4 +1,4 @@
-from datatypes.schema import Schema
+from mufasa.datatypes.schema import Schema
 
 class Projection:
     def __init__(self, input, expr):

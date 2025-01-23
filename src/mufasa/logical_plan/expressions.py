@@ -1,6 +1,6 @@
 from functools import singledispatch
 import pyarrow as pa
-from datatypes.schema import Field
+from mufasa.datatypes.schema import Field
 
 
 class Column:
