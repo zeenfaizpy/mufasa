@@ -6,7 +6,7 @@ def main():
     ctx = ExecutionContext()
     df = (
         ctx.csv("employee.csv")
-        .filter(eq(col("state"), lit("CO")))
+        .filter(eq(col("state"), lit("TN")))
         .project([col('state')])
     )
     df.show_plan()
