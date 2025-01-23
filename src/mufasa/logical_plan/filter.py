@@ -1,15 +1,15 @@
 
 
 class Filter:
-    def __init__(self, input, expr):
-        self.input = input
+    def __init__(self, plan, expr):
+        self.plan = plan
         self.expr = expr
 
     def schema(self):
         pass
 
     def children(self):
-        return [input]
+        return [self.plan]
 
     def __repr__(self):
         return f"Filter {self.expr}"

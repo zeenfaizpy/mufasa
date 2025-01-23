@@ -1,4 +1,3 @@
-from functools import singledispatch
 import pyarrow as pa
 from mufasa.datatypes.schema import Field
 
@@ -18,14 +17,6 @@ class Column:
         return f"#{self.name}"
 
 
-class col(Column):
-    pass
-
-
-@singledispatch
-def lit(value):
-    return LiteralString(value)
-
 class LiteralString:
     def __init__(self, value):
         self.value = value
@@ -35,10 +26,6 @@ class LiteralString:
     
     def __repr__(self):
         return f"'{self.value}'"
-
-@lit.register(str)
-def lit_string(value):
-    return LiteralString(value)
 
 
 class LiteralFloat:
@@ -51,9 +38,18 @@ class LiteralFloat:
     def __repr__(self):
         return f"'{self.value}'"
 
-@lit.register(float)
-def lit_float(value):
-    return LiteralFloat(value)
 
+class BooleanBinaryExpr:
+    def __init__(self, name, op, left, right):
+        self.name = name
+        self.op = op
+        self.left = left
+        self.right = right
+    
+    def to_field(self, input):
+        return Field(self.name, pa.bool_())
+
+    def __repr__(self):
+        return f"{self.left} {self.op} {self.right}"
 
 

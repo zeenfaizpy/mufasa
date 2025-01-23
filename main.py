@@ -1,5 +1,5 @@
 from mufasa.core import ExecutionContext
-from mufasa.core.functions import col, eq, lit
+from mufasa.functions import col, eq, lit
 
 
 def main():
@@ -7,6 +7,9 @@ def main():
     df = (
         ctx.csv("employee.csv")
         .filter(eq(col("state"), lit("CO")))
-        .select(col("id"), col("first_name"), col("first_name"))
+        .project([col('state')])
     )
-    df.logical_plan()
+    df.show_plan()
+
+if __name__ == '__main__':
+    main()

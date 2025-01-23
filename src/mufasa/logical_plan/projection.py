@@ -1,15 +1,16 @@
 from mufasa.datatypes.schema import Schema
 
 class Projection:
-    def __init__(self, input, expr):
-        self.input = input
+    def __init__(self, plan, expr):
+        self.plan = plan
         self.expr = expr
 
     def schema(self):
-        return Schema([e.to_field(self.input) for e in self.expr])
+        return Schema([e.to_field(self.plan) for e in self.expr])
 
     def children(self):
-        return [input]
+        return [self.plan]
 
     def __repr__(self):
-        return f"Projection {[repr(e)for e in self.expr].join(",")}"
+        proj_str = ", ".join([repr(e) for e in self.expr])
+        return f"Projection {proj_str}"

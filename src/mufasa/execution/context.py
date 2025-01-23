@@ -2,6 +2,7 @@ from mufasa.dataframe.dataframe import DataFrame
 from mufasa.datasource.csv import CSVDataSource
 from mufasa.logical_plan.scan import Scan
 
+
 class ExecutionContext:
     def __init__(self):
         pass
@@ -12,6 +13,3 @@ class ExecutionContext:
         plan = Scan(filename, datasource, [])
         df = DataFrame(plan)
         return df
-
-    def execute(self, plan):
-        return plan
