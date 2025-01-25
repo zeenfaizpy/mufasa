@@ -1,0 +1,99 @@
+import pyarrow as pa
+
+
+class PhysicalPlan:
+    def schema(self):
+        raise NotImplementedError()
+
+    def children(self):
+        raise NotImplementedError()
+
+    def execute(self):
+        raise NotImplementedError()
+
+    def format(self, plan=None, indent=0):
+        if plan is None:
+            plan = self
+        plan_string = []
+        for _ in range(indent):
+            plan_string.append("\t".expandtabs(2))
+        plan_string.append(repr(plan))
+        plan_string.append("\n")
+        for child_plan in plan.children():
+            plan_string.append(self.format(child_plan, indent+1))
+        return "".join(plan_string)
+
+
+class PhysicalProjection(PhysicalPlan):
+    def __init__(self, child, expr):
+        self.child = child
+        self.expr = expr
+
+    def schema(self):
+        return self.child.schema
+
+    def children(self):
+        return [self.child]
+
+    def execute(self):
+        batches = self.child.execute()
+        result_batches = []
+        for batch in batches:
+            cols = {}
+            for expr in self.expr:
+                result = expr.evaluate(batch)
+                cols[expr.name] = result
+            record_batch = pa.RecordBatch.from_arrays(list(cols.values()), names=list(cols.keys()))
+            result_batches.append(record_batch)
+        return result_batches # returns list of record_batches
+
+    def __repr__(self):
+        proj_str = ", ".join([repr(e) for e in self.expr])
+        return f"Projection {proj_str}"
+
+
+class PhysicalFilter(PhysicalPlan):
+    def __init__(self, child, expr):
+        self.child = child
+        self.expr = expr
+
+    def schema(self):
+        return self.child.schema
+
+    def children(self):
+        return [self.child]
+    
+    def execute(self):
+        batches = self.child.execute()
+        result_batches = []
+        for batch in batches:
+            cond_result = self.expr.evaluate(batch)
+            result = batch.filter(cond_result)
+            result_batches.append(result)
+        return result_batches # returns list of record_batch
+
+    def __repr__(self):
+        proj_str = ", ".join([repr(e) for e in self.expr])
+        return f"Projection {proj_str}"
+
+
+class PhysicalScan(PhysicalPlan):
+    def __init__(self, datasource, projection):
+        self.datasource = datasource
+        self.projection = projection
+        self.plan = None
+
+    def schema(self):
+        return self.datasource.schema()
+
+    def children(self):
+        return []
+    
+    def execute(self):
+        result = []
+        for chunk in self.datasource.scan():
+            result.append(chunk)
+        return result # returns list of record_batches
+
+    def __repr__(self):
+        return f"Scan: schema={self.schema()}; projection={self.projection}"

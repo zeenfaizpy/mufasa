@@ -1,22 +1,27 @@
-from functools import singledispatch
 from mufasa.logical_plan.expressions import (
-    Column, LiteralString, LiteralFloat, BooleanBinaryExpr
+    Column, Literal, Binary
 )
 
 def col(value):
     return Column(value)
 
-@singledispatch
 def lit(value):
-    return LiteralString(value)
-
-@lit.register(str)
-def lit_string(value):
-    return LiteralString(value)
-
-@lit.register(float)
-def lit_float(value):
-    return LiteralFloat(value)
+    return Literal(value)
 
 def eq(left, right):
-    return BooleanBinaryExpr("eq", "=", left, right)
+    return Binary("eq", "=", left, right)
+
+def not_eq(left, right):
+    return Binary("eq", "!=", left, right)
+
+def gt(left, right):
+    return Binary("eq", ">", left, right)
+
+def gte(left, right):
+    return Binary("eq", ">=", left, right)
+
+def lt(left, right):
+    return Binary("eq", "<", left, right)
+
+def lte(left, right):
+    return Binary("eq", "<=", left, right)

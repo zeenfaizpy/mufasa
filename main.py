@@ -1,5 +1,5 @@
 from mufasa.core import ExecutionContext
-from mufasa.functions import col, eq, lit
+from mufasa.functions import col, lit, gt
 
 
 def main():
@@ -7,10 +7,11 @@ def main():
     df = (
         ctx.csv("employees.csv", has_headers=True, batch_size=4)
         # .filter(eq(col("state"), lit("TN")))
-        .select(col('state'), col('first_name'))
+        .filter(gt(col("salary"), lit(12000)))
+        .select(col('state'), col('first_name'), col('salary'))
     )
     # df.show_plan()
-    print(df.collect())
+    df.collect()
 
 if __name__ == '__main__':
     main()

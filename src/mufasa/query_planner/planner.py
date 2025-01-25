@@ -1,9 +1,9 @@
-from mufasa.logical_plan.projection import Projection
-from mufasa.logical_plan.scan import Scan
-from mufasa.physical_plan.projection import ProjectionExec
-from mufasa.physical_plan.scan import ScanExec
-from mufasa.logical_plan.expressions import Column
-from mufasa.physical_plan.expressions import ColumnExpr
+from mufasa.logical_plan.operators import Projection, Filter, Scan
+from mufasa.physical_plan.operators import PhysicalProjection, PhysicalFilter, PhysicalScan
+from mufasa.logical_plan.expressions import Column, Literal, Binary
+from mufasa.physical_plan.expressions import (
+    ColumnExpr, LiteralExpr, BinaryExpr
+)
 
 
 class QueryPlanner:
@@ -15,20 +15,28 @@ class QueryPlanner:
             plan = self.logical_plan
         
         if isinstance(plan, Scan) and type(plan) == Scan:
-            return ScanExec(plan.datasource, plan.projection)
+            return PhysicalScan(plan.datasource, plan.projection)
         elif isinstance(plan, Projection) and type(plan) == Projection:
-            phy_plan = self.create_physical_plan(plan.plan)
-            projection_expr = list(map(lambda item: self.create_physical_expr(item, plan.plan), plan.expr))
-            return ProjectionExec(phy_plan, projection_expr)
+            child_plan = self.create_physical_plan(plan.child)
+            proj_exprs = []
+            for expr in plan.expr:
+                proj_exprs.append(self.create_physical_expr(expr, plan.child))
+            return PhysicalProjection(child_plan, proj_exprs)
+        elif isinstance(plan, Filter) and type(plan) == Filter:
+            child_plan = self.create_physical_plan(plan.child)
+            filter_expr = self.create_physical_expr(plan.expr, plan.child)
+            return PhysicalFilter(child_plan, filter_expr)
         else:
-            raise Exception("No Match in QueryPlanner")
+            raise Exception("No Match in Physical Plan Execution")
 
     def create_physical_expr(self, expr, plan):
         if isinstance(expr, Column):
-            col_names = list(filter(lambda field: field.name == expr.name, plan.schema().fields))
-            if col_names:
-                return ColumnExpr(col_names[0].name)
-            else:
-                raise Exception(f"No column named {expr.name}")
+            return ColumnExpr(expr.name)
+        elif isinstance(expr, Literal):
+            return LiteralExpr(expr.value)
+        elif isinstance(expr, Binary):
+            left = self.create_physical_expr(expr.left, plan)
+            right = self.create_physical_expr(expr.right, plan)
+            return BinaryExpr(expr.name, left, expr.op, right)
         else:
-            raise Exception("Not Implemented")
+            raise Exception(f"No Match in Physical Expr Execution {expr}")

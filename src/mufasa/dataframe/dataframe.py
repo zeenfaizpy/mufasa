@@ -1,5 +1,5 @@
-from mufasa.logical_plan.projection import *
-from mufasa.logical_plan.filter import *
+from tabulate import tabulate
+from mufasa.logical_plan.operators import Projection, Filter
 
 
 class DataFrame:
@@ -26,7 +26,9 @@ class DataFrame:
         print(plan_str)
     
     def collect(self):
-        data = []
-        for chunk in self.ctx.execute(self):
-            data.append(chunk)
-        return data
+        data = self.ctx.execute(self)
+        # print(data)
+        # print(type(data))
+        data = data[0]
+        data = data.to_pylist()
+        print(tabulate(data, headers='keys', tablefmt='pretty'))

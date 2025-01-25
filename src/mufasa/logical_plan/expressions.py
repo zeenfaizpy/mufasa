@@ -17,7 +17,7 @@ class Column:
         return f"#{self.name}"
 
 
-class LiteralString:
+class Literal:
     def __init__(self, value):
         self.value = value
     
@@ -28,18 +28,7 @@ class LiteralString:
         return f"'{self.value}'"
 
 
-class LiteralFloat:
-    def __init__(self, value):
-        self.value = value
-    
-    def to_field(self, plan):
-        return Field(self.value, pa.float32())
-    
-    def __repr__(self):
-        return f"'{self.value}'"
-
-
-class BooleanBinaryExpr:
+class Binary:
     def __init__(self, name, op, left, right):
         self.name = name
         self.op = op
