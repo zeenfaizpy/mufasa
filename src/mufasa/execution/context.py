@@ -1,5 +1,5 @@
 from mufasa.dataframe.dataframe import DataFrame
-from src.mufasa.datasource.csv import CSVDataSource
+from mufasa.datasource.csv import CSVDataSource
 from mufasa.logical_plan.operators import Scan
 from mufasa.query_planner.planner import QueryPlanner
 

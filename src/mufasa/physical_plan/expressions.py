@@ -65,8 +65,38 @@ class BinaryExpr(Expression):
             return pc.less_equal(left, right)
         elif self.op == ">=":
             return pc.greater_equal(left, right)
+        elif self.op == "AND":
+            return pc.and_(left, right)
+        elif self.op == "OR":
+            return pc.or_(left, right)
         else:
             raise Exception(f"UnSupported Operation {self.op}")
 
     def __repr__(self):
         return f"{self.left} {self.op} {self.right}"
+
+
+class AggregateExpr(Expression):
+    def __init__(self, name, col):
+        self.name = name
+        self.col = col
+
+    def evaluate(self, record_batch): # return pa.array
+        result = self.col.evaluate(record_batch)
+
+        allowed_funs = ['MAX', 'MIN']
+        if self.name in allowed_funs and pa.types.is_string(result.type):
+            raise Exception(f"{self.name} operation on String Column is not Supported")
+
+        if self.name == 'MAX':
+            final_val = pc.max(result)
+        elif self.name == 'MIN':
+            final_val = pc.min(result)
+        elif self.name == 'COUNT':
+            final_val = pc.count(result)
+        else:
+            raise Exception(f"UnSupported Aggregate Operation: {self.name}")
+        return pa.array(repeat(final_val, record_batch.num_rows), type=final_val.type)
+
+    def __repr__(self):
+        return f"#{self.name}"
