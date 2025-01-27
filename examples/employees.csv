@@ -1,9 +1,9 @@
-id,first_name,last_name,state,job_title,salary
-1,Bill,Hopkins,CA,Manager,12000
-2,Gregg,Langford,CO,Driver,10000
-3,John,Travis,CO,Software Developer,11500
-4,Von,Mill,,Defensive End,11500
-5,Mohd,Faizal,TN,Programmer,25200
-6,Mufasa,Lion,KL,Resource Manager,32400
-7,Kafka,Mathew,DL,Data Analyst,25200
-8,Ankit,Diaprio,AP,HR,11100
+id,first_name,last_name,state,job_title,salary,dept
+1,Bill,Hopkins,CA,Manager,12000,IT
+2,Gregg,Langford,CO,Driver,10000,Logistics
+3,John,Travis,CO,Software Developer,11500,IT
+4,Von,Mill,,Defensive End,11500,Manufacturing
+5,Mohd,Faizal,TN,Programmer,25200,HR
+6,Mufasa,Lion,KL,Resource Manager,32400,Sales
+7,Kafka,Mathew,DL,Data Analyst,25200,Sales
+8,Ankit,Diaprio,AP,HR,11100,Manufacturing

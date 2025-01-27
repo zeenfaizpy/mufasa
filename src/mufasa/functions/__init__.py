@@ -40,3 +40,9 @@ def min(expr):
 
 def count(expr):
     return Aggregate('COUNT', expr)
+
+def sum(expr):
+    return Aggregate('SUM', expr)
+
+def avg(expr):
+    return Aggregate('AVG', expr)

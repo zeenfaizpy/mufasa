@@ -24,6 +24,28 @@ class PhysicalPlan:
         return "".join(plan_string)
 
 
+class PhysicalScan(PhysicalPlan):
+    def __init__(self, datasource, projection):
+        self.datasource = datasource
+        self.projection = projection
+        self.plan = None
+
+    def schema(self):
+        return self.datasource.schema()
+
+    def children(self):
+        return []
+    
+    def execute(self):
+        result = []
+        for chunk in self.datasource.scan():
+            result.append(chunk)
+        return result # returns list of record_batches
+
+    def __repr__(self):
+        return f"Scan: schema={self.schema()}; projection={self.projection}"
+
+
 class PhysicalProjection(PhysicalPlan):
     def __init__(self, child, expr):
         self.child = child
@@ -77,23 +99,36 @@ class PhysicalFilter(PhysicalPlan):
         return f"Projection {proj_str}"
 
 
-class PhysicalScan(PhysicalPlan):
-    def __init__(self, datasource, projection):
-        self.datasource = datasource
-        self.projection = projection
-        self.plan = None
+class PhysicalGroupBy(PhysicalPlan):
+    def __init__(self, child, group_exprs, agg_exprs):
+        self.child = child
+        self.group_exprs = group_exprs
+        self.agg_exprs = agg_exprs
 
     def schema(self):
-        return self.datasource.schema()
+        return self.child.schema
 
     def children(self):
-        return []
-    
+        return [self.child]
+
     def execute(self):
-        result = []
-        for chunk in self.datasource.scan():
-            result.append(chunk)
-        return result # returns list of record_batches
+        batches = self.child.execute()
+        table = pa.Table.from_batches(batches)
+
+        # applying group expressions
+        grouped_table = table.group_by([expr.name for expr in self.group_exprs])
+
+        # applying agg expressions
+        agg_results = []
+        for agg_expr in self.agg_exprs:
+            result = grouped_table.aggregate([(agg_expr.col.name, agg_expr.name.lower())])
+            agg_results.append(result)
+        
+        final_table = pa.concat_tables(agg_results)
+        result_batches = final_table.to_batches()
+        return result_batches # returns list of record_batches
 
     def __repr__(self):
-        return f"Scan: schema={self.schema()}; projection={self.projection}"
+        group_str = ", ".join([repr(e) for e in self.group_exprs])
+        agg_str = ", ".join([repr(e) for e in self.agg_exprs])
+        return f"GroupBy(group_cols=[{group_str}], agg_exprs=[{agg_str}])"

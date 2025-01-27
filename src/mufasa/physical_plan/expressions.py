@@ -84,7 +84,7 @@ class AggregateExpr(Expression):
     def evaluate(self, record_batch): # return pa.array
         result = self.col.evaluate(record_batch)
 
-        allowed_funs = ['MAX', 'MIN']
+        allowed_funs = ['MAX', 'MIN', 'SUM', 'AVG']
         if self.name in allowed_funs and pa.types.is_string(result.type):
             raise Exception(f"{self.name} operation on String Column is not Supported")
 
@@ -92,6 +92,10 @@ class AggregateExpr(Expression):
             final_val = pc.max(result)
         elif self.name == 'MIN':
             final_val = pc.min(result)
+        elif self.name == 'SUM':
+            final_val = pc.sum(result)
+        elif self.name == 'AVG':
+            final_val = pc.mean(result)
         elif self.name == 'COUNT':
             final_val = pc.count(result)
         else:
@@ -99,4 +103,4 @@ class AggregateExpr(Expression):
         return pa.array(repeat(final_val, record_batch.num_rows), type=final_val.type)
 
     def __repr__(self):
-        return f"#{self.name}"
+        return f"#{self.name}({self.col})"
