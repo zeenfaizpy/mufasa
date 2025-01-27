@@ -121,7 +121,7 @@ class PhysicalGroupBy(PhysicalPlan):
         # applying agg expressions
         agg_results = []
         for agg_expr in self.agg_exprs:
-            result = grouped_table.aggregate([(agg_expr.col.name, agg_expr.name.lower())])
+            result = grouped_table.aggregate([(agg_expr.expr.name, agg_expr.name.lower())])
             agg_results.append(result)
         
         final_table = pa.concat_tables(agg_results)

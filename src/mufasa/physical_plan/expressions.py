@@ -77,12 +77,12 @@ class BinaryExpr(Expression):
 
 
 class AggregateExpr(Expression):
-    def __init__(self, name, col):
+    def __init__(self, name, expr):
         self.name = name
-        self.col = col
+        self.expr = expr
 
     def evaluate(self, record_batch): # return pa.array
-        result = self.col.evaluate(record_batch)
+        result = self.expr.evaluate(record_batch)
 
         allowed_funs = ['MAX', 'MIN', 'SUM', 'AVG']
         if self.name in allowed_funs and pa.types.is_string(result.type):
@@ -103,4 +103,4 @@ class AggregateExpr(Expression):
         return pa.array(repeat(final_val, record_batch.num_rows), type=final_val.type)
 
     def __repr__(self):
-        return f"#{self.name}({self.col})"
+        return f"#{self.name}({self.expr})"

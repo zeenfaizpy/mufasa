@@ -72,20 +72,8 @@ class Aggregate(Expression):
     
     def to_field(self, plan):
         return Field(self.name, pa.string())
-
-    def __repr__(self):
-        return f"{self.name.upper()}({self.expr})"
-
-
-class AggregateExpr(Expression):
-    def __init__(self, name, col):
-        self.name = name
-        self.col = col
-    
-    def to_field(self, plan):
-        return Field(self.name, pa.string())
     
     def __repr__(self):
-        return f"#{self.name}({self.col})"
+        return f"#{self.name}({self.expr})"
 
 
