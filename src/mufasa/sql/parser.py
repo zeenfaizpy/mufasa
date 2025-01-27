@@ -22,7 +22,6 @@ class SQLParser:
         self.catalog = catalog
 
     def parse(self, sql):
-        # Parse the SQL query into an AST
         ast = parse_one(sql)
         return self.convert_ast_to_logical_plan(ast)
 
@@ -33,50 +32,45 @@ class SQLParser:
             raise Exception("Unsupported SQL statement")
 
     def convert_select(self, select):
-        # Handle FROM clause
+        # FROM clause
         from_clause = select.args.get("from")
         if not from_clause:
             raise Exception("SELECT statement must have a FROM clause")
 
-        # Get the table name or DataFrame
         table_name = from_clause.this.this.this
         df = self.catalog.get_table(table_name)
         if not df:
             raise Exception(f"Table '{table_name}' not found in catalog")
 
-        # Handle WHERE clause
+        # WHERE clause
         where_clause = select.args.get("where")
         if where_clause:
             df = self.apply_filter(df, where_clause)
 
-        # Handle GROUP BY clause
+        # GROUP BY clause
         group_by_clause = select.args.get("group")
         if group_by_clause:
             df = self.apply_group_by(df, group_by_clause)
 
-        # Handle SELECT expressions
+        # SELECT clause
         select_exprs = select.args.get("expressions")
         df = self.apply_projection(df, select_exprs)
 
         return df
 
     def apply_filter(self, df, where_clause):
-        # Convert SQLGlot expression to your logical plan's filter expression
         filter_expr = self.convert_expr(where_clause.this)
         return df.filter(filter_expr)
 
     def apply_group_by(self, df, group_by_clause):
-        # Convert SQLGlot expressions to your logical plan's group by expressions
         group_exprs = [self.convert_expr(expr) for expr in group_by_clause.expressions]
         return df.group_by(*group_exprs)
 
     def apply_projection(self, df, select_exprs):
-        # Convert SQLGlot expressions to your logical plan's projection expressions
         projection_exprs = [self.convert_expr(expr) for expr in select_exprs]
         return df.select(*projection_exprs)
 
     def convert_expr(self, expr):
-        # Convert SQLGlot expressions to your logical plan's expressions
         if isinstance(expr, exp.Column):
             return Column(expr.this.name)
         elif isinstance(expr, exp.Literal):

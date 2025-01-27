@@ -6,7 +6,6 @@ from mufasa.sql.parser import SQLParser
 from .catalog import Catalog
 
 
-
 class ExecutionContext:
     def __init__(self):
         self.catalog = Catalog()

@@ -3,6 +3,7 @@ import pyarrow as pa
 import pyarrow.csv
 from mufasa.datatypes.schema import Field, Schema
 
+
 class CSVDataSource:
     def __init__(self, filename, has_headers=False, batch_size=10):
         self.filename = filename

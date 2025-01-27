@@ -2,7 +2,7 @@
 Musafa is simple Query Processing Engine (aka dataframe library)
 
 
-It is still in development.
+WIP: It is still in development.
 
 ## Try out
 

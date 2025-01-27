@@ -113,6 +113,8 @@ class PhysicalGroupBy(PhysicalPlan):
 
     def execute(self):
         batches = self.child.execute()
+        # TODO: record batches have no support for group operations.
+        # so converting to table to achieve and then back to batches for workaround
         table = pa.Table.from_batches(batches)
 
         # applying group expressions
