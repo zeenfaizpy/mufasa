@@ -19,7 +19,24 @@ df = (
     ctx.csv("employee.csv")
     .select(col('state'), col('first_name'), col('last_name'))
 )
+
+# where
+df = df.filter(col("salary").gt(lit(12000)))
+
+# group by and aggregations
+df = (
+    df.group_by(col('dept'))
+    .agg(sum(col('salary')))
+)
+
+# save it to temp table, then query using sql
+df.create_or_replace_table('employees')
+new_df = ctx.sql("select first_name, salary from employees where salary > 10000")
+
+
+# print the logical plan
 df.show_plan()
 
+# print the final data
 df.collect()
 ```

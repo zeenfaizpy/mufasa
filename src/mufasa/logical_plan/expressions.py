@@ -35,6 +35,33 @@ class Column(Expression):
             return results[0]
         else:
             raise Exception(f"No Column named {self.name}")
+    
+    def eq(self, right):
+        return Binary("eq", self, "=", right)
+    
+    def neq(self, right):
+        return Binary("not_eq", self, "!=", right)
+    
+    def not_eq(self, right):
+        return Binary("not_eq", self, "!=", right)
+
+    def gt(self, right):
+        return Binary("gt", self, ">", right)
+
+    def gte(self, right):
+        return Binary("gte", self, ">=", right)
+
+    def lt(self, right):
+        return Binary("lt", self, "<", right)
+
+    def lte(self, right):
+        return Binary("lte", self, "<=", right)
+
+    def and_op(self, right):
+        return Binary("and_op", self, "AND", right)
+
+    def or_op(self, right):
+        return Binary("or_op", self, "OR", right)
 
     def __repr__(self):
         return f"#{self.name}"
