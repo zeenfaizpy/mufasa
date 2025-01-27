@@ -52,10 +52,10 @@ class Literal(Expression):
 
 
 class Binary(Expression):
-    def __init__(self, name, op, left, right):
+    def __init__(self, name, left, op, right):
         self.name = name
-        self.op = op
         self.left = left
+        self.op = op
         self.right = right
     
     def to_field(self, plan):

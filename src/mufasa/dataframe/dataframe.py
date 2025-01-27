@@ -8,6 +8,10 @@ class DataFrame:
         self.ctx = ctx
         self.plan = plan
     
+    def create_or_replace_table(self, name):
+        self.ctx.register_table(name, self)
+        return DataFrame(self.ctx, self.plan)
+    
     def select(self, *args):
         logical_plan = Projection(self.plan, args)
         return DataFrame(self.ctx, logical_plan)

@@ -16,7 +16,7 @@ class ColumnExpr(Expression):
         if self.name in record_batch.schema.names:
             return record_batch.column(self.name)
         else:
-            raise Exception(f"Coumn name {self.name} doesn't exist")
+            raise Exception(f"Column name {self.name} doesn't exist")
 
     def __repr__(self):
         return f"#{self.name}"
@@ -52,6 +52,10 @@ class BinaryExpr(Expression):
     def evaluate(self, record_batch): # return pa.array
         left = self.left.evaluate(record_batch)
         right = self.right.evaluate(record_batch)
+
+        if isinstance(self.left, ColumnExpr) and isinstance(self.right, LiteralExpr):
+            left_type = left.type
+            right = pc.cast(right, target_type=left_type)
 
         if self.op == "=":
             return pc.equal(left, right)
