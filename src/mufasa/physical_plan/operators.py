@@ -1,5 +1,5 @@
 import pyarrow as pa
-
+from mufasa.physical_plan.expressions import ColumnExpr
 
 class PhysicalPlan:
     def schema(self):
@@ -118,13 +118,15 @@ class PhysicalGroupBy(PhysicalPlan):
         table = pa.Table.from_batches(batches)
 
         # applying group expressions
-        grouped_table = table.group_by([expr.name for expr in self.group_exprs])
+        group_exprs_names = [expr.name for expr in self.group_exprs]
+        grouped_table = table.group_by(group_exprs_names)
 
         # applying agg expressions
         agg_results = []
         for agg_expr in self.agg_exprs:
-            result = grouped_table.aggregate([(agg_expr.expr.name, agg_expr.name.lower())])
-            agg_results.append(result)
+            if agg_expr.name not in group_exprs_names: # excluding grouped column
+                result = grouped_table.aggregate([(agg_expr.expr.name, agg_expr.name.lower())])
+                agg_results.append(result)
         
         final_table = pa.concat_tables(agg_results)
         result_batches = final_table.to_batches()

@@ -107,4 +107,4 @@ class AggregateExpr(Expression):
         return pa.array(repeat(final_val, record_batch.num_rows), type=final_val.type)
 
     def __repr__(self):
-        return f"#{self.name}({self.expr})"
+        return f"{self.name}({self.expr})"

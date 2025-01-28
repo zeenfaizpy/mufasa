@@ -50,11 +50,13 @@ class SQLParser:
         # GROUP BY clause
         group_by_clause = select.args.get("group")
         if group_by_clause:
-            df = self.apply_group_by(df, group_by_clause)
-
-        # SELECT clause
-        select_exprs = select.args.get("expressions")
-        df = self.apply_projection(df, select_exprs)
+            grouped_df = self.apply_group_by(df, group_by_clause)
+            agg_exprs = select.args.get("expressions")
+            df = self.apply_agg(grouped_df, agg_exprs)
+        else:
+            # SELECT clause
+            select_exprs = select.args.get("expressions")
+            df = self.apply_projection(df, select_exprs)
 
         return df
 
@@ -65,6 +67,10 @@ class SQLParser:
     def apply_group_by(self, df, group_by_clause):
         group_exprs = [self.convert_expr(expr) for expr in group_by_clause.expressions]
         return df.group_by(*group_exprs)
+    
+    def apply_agg(self, df, agg_exprs):
+        projection_exprs = [self.convert_expr(expr) for expr in agg_exprs]
+        return df.agg(*projection_exprs)
 
     def apply_projection(self, df, select_exprs):
         projection_exprs = [self.convert_expr(expr) for expr in select_exprs]
@@ -91,10 +97,10 @@ class SQLParser:
             if not op:
                 Exception(f"Unsupported expression: {expr}")
 
-            return Binary(expr.this, left, op, right)
+            return Binary(expr.key, left, op, right)
         elif isinstance(expr, exp.Alias):
             return self.convert_expr(expr.this).alias(expr.alias)
         elif isinstance(expr, exp.AggFunc):
-            return Aggregate(expr.this, self.convert_expr(expr.expressions[0]))
+            return Aggregate(expr.key, self.convert_expr(expr.this))
         else:
             raise Exception(f"Unsupported expression: {expr}")

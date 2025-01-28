@@ -51,6 +51,12 @@ class GroupedDataFrame:
         logical_plan = GroupBy(self.df.plan, self.group_exprs, agg_exprs)
         return DataFrame(self.df.ctx, logical_plan)
     
+    def show_plan(self):
+        self.df.show_plan()
+    
+    def collect(self):
+        self.df.collect()
+    
     def count(self):
         return self.agg(count(lit(1)))
 

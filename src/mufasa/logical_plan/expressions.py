@@ -101,6 +101,6 @@ class Aggregate(Expression):
         return Field(self.name, pa.string())
     
     def __repr__(self):
-        return f"#{self.name}({self.expr})"
+        return f"{self.name}({self.expr})"
 
 

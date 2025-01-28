@@ -35,7 +35,10 @@ class Scan(LogicalPlan):
         return []
 
     def __repr__(self):
-        return f"Scan: {self.filepath}; projection={self.projection}"
+        if self.projection:
+            return f"Scan: {self.filepath}; projection={self.projection}"
+        else:
+            return f"Scan: {self.filepath}"
 
 
 class Projection(LogicalPlan):
