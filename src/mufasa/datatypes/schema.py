@@ -1,7 +1,7 @@
 import pyarrow as pa
 
 class Field:
-    def __init__(self, name, data_type):
+    def __init__(self, name: str, data_type):
         self.name = name
         self.data_type = data_type
     

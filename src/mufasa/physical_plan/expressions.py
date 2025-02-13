@@ -3,12 +3,12 @@ import pyarrow as pa
 import pyarrow.compute as pc
 
 
-class Expression:
+class PhysicalExpr:
     def evaluate(self):
         raise NotImplementedError()
 
 
-class ColumnExpr(Expression):
+class ColumnExpr(PhysicalExpr):
     def __init__(self, name):
         self.name = name
 
@@ -22,7 +22,7 @@ class ColumnExpr(Expression):
         return f"#{self.name}"
 
 
-class LiteralExpr(Expression):
+class LiteralExpr(PhysicalExpr):
     def __init__(self, value):
         self.value = value
 
@@ -42,7 +42,7 @@ class LiteralExpr(Expression):
         return f"#{self.value}"
 
 
-class BinaryExpr(Expression):
+class BinaryExpr(PhysicalExpr):
     def __init__(self, name, left, op, right):
         self.name = name
         self.left = left
@@ -80,7 +80,7 @@ class BinaryExpr(Expression):
         return f"{self.left} {self.op} {self.right}"
 
 
-class AggregateExpr(Expression):
+class AggregateExpr(PhysicalExpr):
     def __init__(self, name, expr):
         self.name = name
         self.expr = expr

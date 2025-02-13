@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
 import csv
 import pyarrow as pa
 import pyarrow.csv
@@ -5,7 +7,7 @@ from mufasa.datatypes.schema import Field, Schema
 
 
 class CSVDataSource:
-    def __init__(self, filename, has_headers=False, batch_size=10):
+    def __init__(self, filename: str, has_headers=False, batch_size=10):
         self.filename = filename
         self.has_headers = has_headers
         self.batch_size = batch_size

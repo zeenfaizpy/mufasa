@@ -2,7 +2,7 @@ import pyarrow as pa
 from mufasa.datatypes.schema import Field
 
 
-class Expression:
+class LogicalExpr:
     def evaluate(self):
         raise NotImplementedError()
     
@@ -25,7 +25,7 @@ class Expression:
         return Binary("or_op", "OR", self, other)
 
 
-class Column(Expression):
+class Column(LogicalExpr):
     def __init__(self, name):
         self.name = name
     
@@ -67,7 +67,7 @@ class Column(Expression):
         return f"#{self.name}"
 
 
-class Literal(Expression):
+class Literal(LogicalExpr):
     def __init__(self, value):
         self.value = value
     
@@ -78,7 +78,7 @@ class Literal(Expression):
         return f"'{self.value}'"
 
 
-class Binary(Expression):
+class Binary(LogicalExpr):
     def __init__(self, name, left, op, right):
         self.name = name
         self.left = left
@@ -92,7 +92,7 @@ class Binary(Expression):
         return f"{self.left} {self.op} {self.right}"
 
 
-class Aggregate(Expression):
+class Aggregate(LogicalExpr):
     def __init__(self, name, expr):
         self.name = name
         self.expr = expr

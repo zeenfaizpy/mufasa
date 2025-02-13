@@ -4,11 +4,13 @@ Musafa is simple Query Processing Engine (aka dataframe library)
 
 WIP: It is still in development.
 
-## Try out
+## Installation
 
 ```bash
 pip install git+https://github.com/zeenfaizpy/mufasa.git@main
 ```
+
+## Usage
 
 ```python
 from mufasa.core import ExecutionContext
@@ -40,3 +42,12 @@ df.show_plan()
 # print the final data
 df.collect()
 ```
+
+## Features
+
+- Dataframe API
+- Full SQL Support with catalog
+- Pyspark Compatible API
+
+## License
+The GNU license. Please check `LICENSE` for more details.
