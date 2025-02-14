@@ -46,8 +46,23 @@ df.collect()
 ## Features
 
 - Dataframe API
-- Full SQL Support with catalog
+- SQL Support with catalog
 - Pyspark Compatible API
+
+
+## SQL Operations
+
+- [x] FROM
+- [x] WHERE
+- [x] SELECT
+- [x] GROUP BY
+- [ ] HAVING
+- [ ] JOIN
+- [ ] SubQueries
+- [ ] CTE
+- [ ] Window Functions
+- [ ] CASE
+
 
 ## License
 The GNU license. Please check `LICENSE` for more details.

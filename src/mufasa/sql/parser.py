@@ -2,21 +2,6 @@ from sqlglot import exp, parse_one
 from mufasa.logical_plan.expressions import *
 
 
-# class SQLToPlan:
-#     def __init__(self, query):
-#         self.query = query
-    
-#     def parse_query(self):
-#         statement = parse_one(self.query)
-#         self.sql_to_plan(statement)
-
-#     def sql_to_plan(self, statement):
-#         if isinstance(statement, exp.Select):
-#             self.convert_select_to_plan(statement)
-#         else:
-#             raise Exception("Only SELECT statement is supported")
-
-
 class SQLParser:
     def __init__(self, catalog):
         self.catalog = catalog
