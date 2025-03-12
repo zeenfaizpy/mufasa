@@ -42,6 +42,20 @@ class LiteralExpr(PhysicalExpr):
         return f"#{self.value}"
 
 
+class AliasExpr(PhysicalExpr):
+    def __init__(self, expr, alias):
+        self.expr = expr
+        self.alias = alias
+        self.name = alias
+
+    def evaluate(self, record_batch): # return pa.array
+        pa_arr = self.expr.evaluate(record_batch)
+        return pa_arr
+
+    def __repr__(self):
+        return f"#{self.alias}"
+
+
 class BinaryExpr(PhysicalExpr):
     def __init__(self, name, left, op, right):
         self.name = name

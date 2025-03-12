@@ -1,8 +1,8 @@
 from mufasa.logical_plan.operators import Projection, Filter, Scan, GroupBy
 from mufasa.physical_plan.operators import PhysicalProjection, PhysicalFilter, PhysicalScan, PhysicalGroupBy
-from mufasa.logical_plan.expressions import Column, Literal, Binary, Aggregate
+from mufasa.logical_plan.expressions import Column, Literal, Alias, Binary, Aggregate
 from mufasa.physical_plan.expressions import (
-    ColumnExpr, LiteralExpr, BinaryExpr, AggregateExpr
+    ColumnExpr, LiteralExpr, AliasExpr, BinaryExpr, AggregateExpr
 )
 
 
@@ -39,6 +39,9 @@ class QueryPlanner:
             return ColumnExpr(expr.name)
         elif isinstance(expr, Literal):
             return LiteralExpr(expr.value)
+        elif isinstance(expr, Alias):
+            result = self.create_physical_expr(expr.expr, plan)
+            return AliasExpr(result, expr.alias)
         elif isinstance(expr, Binary):
             left = self.create_physical_expr(expr.left, plan)
             right = self.create_physical_expr(expr.right, plan)

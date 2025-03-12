@@ -62,6 +62,9 @@ class Column(LogicalExpr):
 
     def or_op(self, right):
         return Binary("or_op", self, "OR", right)
+    
+    def alias(self, name):
+        return Alias(self, name)
 
     def __repr__(self):
         return f"#{self.name}"
@@ -76,6 +79,18 @@ class Literal(LogicalExpr):
     
     def __repr__(self):
         return f"'{self.value}'"
+
+
+class Alias(LogicalExpr):
+    def __init__(self, expr, alias):
+        self.expr = expr
+        self.alias = alias
+    
+    def to_field(self, plan):
+        return Field(self.alias, self.expr.to_field(plan).data_type)
+    
+    def __repr__(self):
+        return f"{self.expr} as #{self.alias}"
 
 
 class Binary(LogicalExpr):
