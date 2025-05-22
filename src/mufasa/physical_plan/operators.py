@@ -126,7 +126,9 @@ class PhysicalGroupBy(PhysicalPlan):
         agg_results = []
         for agg_expr in self.agg_exprs:
             if agg_expr.name not in group_exprs_names: # excluding grouped column
+                # print(agg_expr.expr.name, agg_expr.name.lower())
                 result = grouped_table.aggregate([(agg_expr.expr.name, agg_expr.name.lower())])
+                # print(result)
                 agg_results.append(result)
         
         final_table = pa.concat_tables(agg_results)

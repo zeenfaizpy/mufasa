@@ -1,9 +1,9 @@
 id,first_name,last_name,state,job_title,salary,dept
-1,Bill,Hopkins,CA,Manager,12000,Manufacturing
-2,Gregg,Langford,CO,Driver,10000,Transport
-3,John,Travis,CO,Software Developer,11500,IT
+1,Bill,Hopkins,MH,Manager,12000,Manufacturing
+2,Gregg,Langford,UP,Driver,10000,Transport
+3,John,Travis,TL,Software Developer,11500,IT
 4,Von,Mill,,Defensive End,11500,Manufacturing
-5,Mohd,Faizal,TN,Programmer,25200,IT
+5,Faizal,Mohammad,TN,Programmer,25200,IT
 6,Mufasa,Lion,KL,Resource Manager,32400,Sales
 7,Kafka,Mathew,DL,Data Analyst,25200,Data
 8,Ankit,Diaprio,AP,Recruiter,11100,HR

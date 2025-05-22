@@ -12,16 +12,23 @@ def main():
     #     .select(count(col('state')))
     # )
 
-    # df = (
-    #     ctx.csv("examples/employees.csv", has_headers=True, batch_size=4)
-    #     .group_by(col('dept'))
-    #     .agg(sum(col('salary')))
-    # )
-
     df = (
         ctx.csv("examples/employees.csv", has_headers=True, batch_size=4)
-        .filter(col("salary").gt(lit(12000)))
+        .group_by(col('dept'))
+        .agg(sum(col('salary')))
     )
+
+    # df = (
+    #     ctx.csv("examples/employees.csv", has_headers=True, batch_size=4)
+    #     .filter(col("salary").gt(lit(12000)))
+    # )
+
+
+    # df = (
+    #     ctx.csv("examples/employees.csv", has_headers=True, batch_size=4)
+    #     .filter(col("salary").gt(lit(12000)))
+    #     .select(col('first_name').alias('employee_first_name'), col('last_name'), col('salary'))
+    # )
     df.show_plan()
     df.collect()
 

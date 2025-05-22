@@ -103,6 +103,9 @@ class Binary(LogicalExpr):
     def to_field(self, plan):
         return Field(self.name, pa.bool_())
 
+    def alias(self, name):
+        return Alias(self, name)
+
     def __repr__(self):
         return f"{self.left} {self.op} {self.right}"
 
@@ -114,6 +117,9 @@ class Aggregate(LogicalExpr):
     
     def to_field(self, plan):
         return Field(self.name, pa.string())
+
+    def alias(self, name):
+        return Alias(self, name)
     
     def __repr__(self):
         return f"{self.name}({self.expr})"
