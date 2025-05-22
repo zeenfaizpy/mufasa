@@ -1,3 +1,7 @@
+[![uv](https://img.shields.io/badge/Managed_by-uv-green)](https://github.com/zeenfaizpy/mufasa)
+[![license](https://img.shields.io/badge/license-MIT-yellow)](https://github.com/zeenfaizpy/mufasa)
+[![license](https://img.shields.io/badge/python-3.13-blue)](https://github.com/zeenfaizpy/mufasa)
+
 # mufasa
 
 Musafa is simple Query Processing Engine (aka dataframe library)
