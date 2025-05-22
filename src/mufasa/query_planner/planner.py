@@ -14,19 +14,19 @@ class QueryPlanner:
         if plan is None:
             plan = self.logical_plan
         
-        if isinstance(plan, Scan) and type(plan) == Scan:
+        if plan is Scan:
             return PhysicalScan(plan.datasource, plan.projection)
-        elif isinstance(plan, Projection) and type(plan) == Projection:
+        elif plan is Projection:
             child_plan = self.create_physical_plan(plan.child)
             proj_exprs = []
             for expr in plan.expr:
                 proj_exprs.append(self.create_physical_expr(expr, plan.child))
             return PhysicalProjection(child_plan, proj_exprs)
-        elif isinstance(plan, Filter) and type(plan) == Filter:
+        elif plan is Filter:
             child_plan = self.create_physical_plan(plan.child)
             filter_expr = self.create_physical_expr(plan.expr, plan.child)
             return PhysicalFilter(child_plan, filter_expr)
-        elif isinstance(plan, GroupBy) and type(plan) == GroupBy:
+        elif plan is GroupBy:
             child_plan = self.create_physical_plan(plan.child)
             group_exprs = [self.create_physical_expr(expr, plan.child) for expr in plan.group_exprs]
             agg_exprs = [self.create_physical_expr(expr, plan.child) for expr in plan.agg_exprs]

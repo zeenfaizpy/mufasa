@@ -1,5 +1,4 @@
 import pyarrow as pa
-from mufasa.physical_plan.expressions import ColumnExpr
 
 class PhysicalPlan:
     def schema(self):

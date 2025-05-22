@@ -1,8 +1,8 @@
 from mufasa.logical_plan.operators import (
-    Scan, Projection, Filter, GroupBy
+    Projection
 )
 from mufasa.logical_plan.expressions import (
-    Column, Literal, Binary, Aggregate
+    Literal, Binary
 )
 
 

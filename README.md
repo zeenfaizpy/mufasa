@@ -66,3 +66,5 @@ df.collect()
 
 ## License
 The GNU license. Please check `LICENSE` for more details.
+
+![not-by-ai](./not-by-ai.png)

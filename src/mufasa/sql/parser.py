@@ -1,5 +1,7 @@
 from sqlglot import exp, parse_one
-from mufasa.logical_plan.expressions import *
+from mufasa.logical_plan.expressions import (
+    Aggregate, Binary, Column, Literal
+)
 
 
 class SQLParser:
