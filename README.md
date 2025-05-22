@@ -1,8 +1,11 @@
 # mufasa
+
 Musafa is simple Query Processing Engine (aka dataframe library)
 
 
 WIP: It is still in development.
+
+<img src="not-by-ai.png" alt="not-by-ai" width="150"/>
 
 ## Installation
 
@@ -66,5 +69,3 @@ df.collect()
 
 ## License
 The GNU license. Please check `LICENSE` for more details.
-
-![not-by-ai](./not-by-ai.png)
