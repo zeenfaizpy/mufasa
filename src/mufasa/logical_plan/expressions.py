@@ -5,22 +5,22 @@ from mufasa.datatypes.schema import Field
 class LogicalExpr:
     def evaluate(self):
         raise NotImplementedError()
-    
+
     def __lt__(self, other):
         return Binary("lt", "<", self, other)
 
     def __le__(self, other):
         return Binary("lte", "<=", self, other)
-    
+
     def __gt__(self, other):
         return Binary("gt", ">", self, other)
 
     def __ge__(self, other):
         return Binary("gte", ">=", self, other)
-    
+
     def __and__(self, other):
         return Binary("and_op", "AND", self, other)
-    
+
     def __or__(self, other):
         return Binary("or_op", "OR", self, other)
 
@@ -28,20 +28,22 @@ class LogicalExpr:
 class Column(LogicalExpr):
     def __init__(self, name):
         self.name = name
-    
+
     def to_field(self, plan):
-        results = list(filter(lambda item: item.name == self.name, plan.schema().fields))
+        results = list(
+            filter(lambda item: item.name == self.name, plan.schema().fields)
+        )
         if results:
             return results[0]
         else:
             raise Exception(f"No Column named {self.name}")
-    
+
     def eq(self, right):
         return Binary("eq", self, "=", right)
-    
+
     def neq(self, right):
         return Binary("not_eq", self, "!=", right)
-    
+
     def not_eq(self, right):
         return Binary("not_eq", self, "!=", right)
 
@@ -62,7 +64,7 @@ class Column(LogicalExpr):
 
     def or_op(self, right):
         return Binary("or_op", self, "OR", right)
-    
+
     def alias(self, name):
         return Alias(self, name)
 
@@ -73,10 +75,10 @@ class Column(LogicalExpr):
 class Literal(LogicalExpr):
     def __init__(self, value):
         self.value = value
-    
+
     def to_field(self, plan):
         return Field(self.value, pa.string())
-    
+
     def __repr__(self):
         return f"'{self.value}'"
 
@@ -85,10 +87,10 @@ class Alias(LogicalExpr):
     def __init__(self, expr, alias):
         self.expr = expr
         self.alias = alias
-    
+
     def to_field(self, plan):
         return Field(self.alias, self.expr.to_field(plan).data_type)
-    
+
     def __repr__(self):
         return f"{self.expr} as #{self.alias}"
 
@@ -99,7 +101,7 @@ class Binary(LogicalExpr):
         self.left = left
         self.op = op
         self.right = right
-    
+
     def to_field(self, plan):
         return Field(self.name, pa.bool_())
 
@@ -114,14 +116,12 @@ class Aggregate(LogicalExpr):
     def __init__(self, name, expr):
         self.name = name
         self.expr = expr
-    
+
     def to_field(self, plan):
         return Field(self.name, pa.string())
 
     def alias(self, name):
         return Alias(self, name)
-    
+
     def __repr__(self):
         return f"{self.name}({self.expr})"
-
-

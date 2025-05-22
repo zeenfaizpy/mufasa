@@ -25,7 +25,7 @@ class ExecutionContext:
 
     def register_table(self, name, df):
         self.catalog.register_table(name, df)
-    
+
     def sql(self, query):
         parser = SQLParser(self.catalog)
         return parser.parse(query)

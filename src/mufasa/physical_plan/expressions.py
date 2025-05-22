@@ -12,7 +12,7 @@ class ColumnExpr(PhysicalExpr):
     def __init__(self, name):
         self.name = name
 
-    def evaluate(self, record_batch): # return pa.array
+    def evaluate(self, record_batch):  # return pa.array
         if self.name in record_batch.schema.names:
             return record_batch.column(self.name)
         else:
@@ -26,16 +26,16 @@ class LiteralExpr(PhysicalExpr):
     def __init__(self, value):
         self.value = value
 
-    def evaluate(self, record_batch): # return pa.array
-        data_type= pa.string()
+    def evaluate(self, record_batch):  # return pa.array
+        data_type = pa.string()
         if isinstance(self.value, int):
-            data_type= pa.int64()
+            data_type = pa.int64()
         elif isinstance(self.value, float):
-            data_type= pa.float64()
+            data_type = pa.float64()
         elif isinstance(self.value, str):
-            data_type= pa.string()
+            data_type = pa.string()
         elif isinstance(self.value, bool):
-            data_type= pa.bool_()
+            data_type = pa.bool_()
         return pa.array(repeat(self.value, record_batch.num_rows), type=data_type)
 
     def __repr__(self):
@@ -48,7 +48,7 @@ class AliasExpr(PhysicalExpr):
         self.alias = alias
         self.name = alias
 
-    def evaluate(self, record_batch): # return pa.array
+    def evaluate(self, record_batch):  # return pa.array
         pa_arr = self.expr.evaluate(record_batch)
         return pa_arr
 
@@ -63,7 +63,7 @@ class BinaryExpr(PhysicalExpr):
         self.op = op
         self.right = right
 
-    def evaluate(self, record_batch): # return pa.array
+    def evaluate(self, record_batch):  # return pa.array
         left = self.left.evaluate(record_batch)
         right = self.right.evaluate(record_batch)
 
@@ -99,22 +99,22 @@ class AggregateExpr(PhysicalExpr):
         self.name = name
         self.expr = expr
 
-    def evaluate(self, record_batch): # return pa.array
+    def evaluate(self, record_batch):  # return pa.array
         result = self.expr.evaluate(record_batch)
 
-        allowed_funs = ['MAX', 'MIN', 'SUM', 'AVG']
+        allowed_funs = ["MAX", "MIN", "SUM", "AVG"]
         if self.name in allowed_funs and pa.types.is_string(result.type):
             raise Exception(f"{self.name} operation on String Column is not Supported")
 
-        if self.name == 'MAX':
+        if self.name == "MAX":
             final_val = pc.max(result)
-        elif self.name == 'MIN':
+        elif self.name == "MIN":
             final_val = pc.min(result)
-        elif self.name == 'SUM':
+        elif self.name == "SUM":
             final_val = pc.sum(result)
-        elif self.name == 'AVG':
+        elif self.name == "AVG":
             final_val = pc.mean(result)
-        elif self.name == 'COUNT':
+        elif self.name == "COUNT":
             final_val = pc.count(result)
         else:
             raise Exception(f"UnSupported Aggregate Operation: {self.name}")

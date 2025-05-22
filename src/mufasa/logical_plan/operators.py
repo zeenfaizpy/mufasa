@@ -17,7 +17,7 @@ class LogicalPlan:
         plan_string.append(repr(plan))
         plan_string.append("\n")
         for child_plan in plan.children():
-            plan_string.append(self.format(child_plan, indent+1))
+            plan_string.append(self.format(child_plan, indent + 1))
         return "".join(plan_string)
 
 
@@ -29,7 +29,7 @@ class Scan(LogicalPlan):
         self.child = None
 
     def schema(self):
-       return self.datasource.schema()
+        return self.datasource.schema()
 
     def children(self):
         return []

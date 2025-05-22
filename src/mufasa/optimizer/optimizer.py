@@ -1,9 +1,5 @@
-from mufasa.logical_plan.operators import (
-    Projection
-)
-from mufasa.logical_plan.expressions import (
-    Literal, Binary
-)
+from mufasa.logical_plan.operators import Projection
+from mufasa.logical_plan.expressions import Literal, Binary
 
 
 class ConstantFolding:
@@ -13,7 +9,7 @@ class ConstantFolding:
             return Projection(plan.child, exprs)
         else:
             return plan
-    
+
     def fold_constants(self, expr):
         if isinstance(expr, Binary):
             left = self.fold_constants(expr.left)
@@ -36,10 +32,8 @@ class ConstantFolding:
 
 class Optimizer:
     def __init__(self):
-        self.rules = [
-            ConstantFolding()
-        ]
-    
+        self.rules = [ConstantFolding()]
+
     def optimize(self, plan):
         for rule in self.rules:
             plan = rule.optimize(plan)

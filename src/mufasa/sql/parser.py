@@ -1,7 +1,5 @@
 from sqlglot import exp, parse_one
-from mufasa.logical_plan.expressions import (
-    Aggregate, Binary, Column, Literal
-)
+from mufasa.logical_plan.expressions import Aggregate, Binary, Column, Literal
 
 
 class SQLParser:
@@ -54,7 +52,7 @@ class SQLParser:
     def apply_group_by(self, df, group_by_clause):
         group_exprs = [self.convert_expr(expr) for expr in group_by_clause.expressions]
         return df.group_by(*group_exprs)
-    
+
     def apply_agg(self, df, agg_exprs):
         projection_exprs = [self.convert_expr(expr) for expr in agg_exprs]
         return df.agg(*projection_exprs)
@@ -73,12 +71,12 @@ class SQLParser:
             right = self.convert_expr(expr.right)
 
             op_map = {
-                exp.GT: '>',
-                exp.GTE: '>=',
-                exp.LT: '<',
-                exp.LTE: '<=',
-                exp.EQ: '=',
-                exp.NEQ: '!=',
+                exp.GT: ">",
+                exp.GTE: ">=",
+                exp.LT: "<",
+                exp.LTE: "<=",
+                exp.EQ: "=",
+                exp.NEQ: "!=",
             }
             op = op_map.get(type(expr))
             if not op:

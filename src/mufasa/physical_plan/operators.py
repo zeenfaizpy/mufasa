@@ -1,5 +1,6 @@
 import pyarrow as pa
 
+
 class PhysicalPlan:
     def schema(self):
         raise NotImplementedError()
@@ -19,7 +20,7 @@ class PhysicalPlan:
         plan_string.append(repr(plan))
         plan_string.append("\n")
         for child_plan in plan.children():
-            plan_string.append(self.format(child_plan, indent+1))
+            plan_string.append(self.format(child_plan, indent + 1))
         return "".join(plan_string)
 
 
@@ -34,12 +35,12 @@ class PhysicalScan(PhysicalPlan):
 
     def children(self):
         return []
-    
+
     def execute(self):
         result = []
         for chunk in self.datasource.scan():
             result.append(chunk)
-        return result # returns list of record_batches
+        return result  # returns list of record_batches
 
     def __repr__(self):
         return f"Scan: schema={self.schema()}; projection={self.projection}"
@@ -64,9 +65,11 @@ class PhysicalProjection(PhysicalPlan):
             for expr in self.expr:
                 result = expr.evaluate(batch)
                 cols[expr.name] = result
-            record_batch = pa.RecordBatch.from_arrays(list(cols.values()), names=list(cols.keys()))
+            record_batch = pa.RecordBatch.from_arrays(
+                list(cols.values()), names=list(cols.keys())
+            )
             result_batches.append(record_batch)
-        return result_batches # returns list of record_batches
+        return result_batches  # returns list of record_batches
 
     def __repr__(self):
         proj_str = ", ".join([repr(e) for e in self.expr])
@@ -83,7 +86,7 @@ class PhysicalFilter(PhysicalPlan):
 
     def children(self):
         return [self.child]
-    
+
     def execute(self):
         batches = self.child.execute()
         result_batches = []
@@ -91,7 +94,7 @@ class PhysicalFilter(PhysicalPlan):
             cond_result = self.expr.evaluate(batch)
             result = batch.filter(cond_result)
             result_batches.append(result)
-        return result_batches # returns list of record_batch
+        return result_batches  # returns list of record_batch
 
     def __repr__(self):
         proj_str = ", ".join([repr(e) for e in self.expr])
@@ -113,7 +116,7 @@ class PhysicalGroupBy(PhysicalPlan):
     def execute(self):
         batches = self.child.execute()
         # TODO: record batches have no support for group operations.
-        # so converting to table to achieve and then back to batches for 
+        # so converting to table to achieve and then back to batches for
         # temporary workaround
         table = pa.Table.from_batches(batches)
 
@@ -124,15 +127,17 @@ class PhysicalGroupBy(PhysicalPlan):
         # applying agg expressions
         agg_results = []
         for agg_expr in self.agg_exprs:
-            if agg_expr.name not in group_exprs_names: # excluding grouped column
+            if agg_expr.name not in group_exprs_names:  # excluding grouped column
                 # print(agg_expr.expr.name, agg_expr.name.lower())
-                result = grouped_table.aggregate([(agg_expr.expr.name, agg_expr.name.lower())])
+                result = grouped_table.aggregate(
+                    [(agg_expr.expr.name, agg_expr.name.lower())]
+                )
                 # print(result)
                 agg_results.append(result)
-        
+
         final_table = pa.concat_tables(agg_results)
         result_batches = final_table.to_batches()
-        return result_batches # returns list of record_batches
+        return result_batches  # returns list of record_batches
 
     def __repr__(self):
         group_str = ", ".join([repr(e) for e in self.group_exprs])

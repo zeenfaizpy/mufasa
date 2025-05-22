@@ -1,19 +1,28 @@
 from mufasa.logical_plan.operators import Projection, Filter, Scan, GroupBy
-from mufasa.physical_plan.operators import PhysicalProjection, PhysicalFilter, PhysicalScan, PhysicalGroupBy
+from mufasa.physical_plan.operators import (
+    PhysicalProjection,
+    PhysicalFilter,
+    PhysicalScan,
+    PhysicalGroupBy,
+)
 from mufasa.logical_plan.expressions import Column, Literal, Alias, Binary, Aggregate
 from mufasa.physical_plan.expressions import (
-    ColumnExpr, LiteralExpr, AliasExpr, BinaryExpr, AggregateExpr
+    ColumnExpr,
+    LiteralExpr,
+    AliasExpr,
+    BinaryExpr,
+    AggregateExpr,
 )
 
 
 class QueryPlanner:
     def __init__(self, logical_plan):
         self.logical_plan = logical_plan
-    
+
     def create_physical_plan(self, plan=None):
         if plan is None:
             plan = self.logical_plan
-        
+
         if plan is Scan:
             return PhysicalScan(plan.datasource, plan.projection)
         elif plan is Projection:
@@ -28,8 +37,12 @@ class QueryPlanner:
             return PhysicalFilter(child_plan, filter_expr)
         elif plan is GroupBy:
             child_plan = self.create_physical_plan(plan.child)
-            group_exprs = [self.create_physical_expr(expr, plan.child) for expr in plan.group_exprs]
-            agg_exprs = [self.create_physical_expr(expr, plan.child) for expr in plan.agg_exprs]
+            group_exprs = [
+                self.create_physical_expr(expr, plan.child) for expr in plan.group_exprs
+            ]
+            agg_exprs = [
+                self.create_physical_expr(expr, plan.child) for expr in plan.agg_exprs
+            ]
             return PhysicalGroupBy(child_plan, group_exprs, agg_exprs)
         else:
             raise Exception("No Match in Physical Plan Execution")
