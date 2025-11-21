@@ -29,7 +29,7 @@ def main():
     #     .select(col('first_name').alias('employee_first_name'), col('last_name'), col('salary'))
     # )
     df.show_plan()
-    df.collect()
+    df.show()
 
 
 if __name__ == "__main__":

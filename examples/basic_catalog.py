@@ -11,7 +11,7 @@ def main():
         "select dept, sum(salary) from employees where salary > 10000 group by dept"
     )
     new_df.show_plan()
-    new_df.collect()
+    new_df.show()
 
 
 if __name__ == "__main__":

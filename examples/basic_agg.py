@@ -11,7 +11,7 @@ def main():
         .agg(sum(col("salary")))
     )
     df.show_plan()
-    df.collect()
+    df.show()
 
 
 if __name__ == "__main__":
