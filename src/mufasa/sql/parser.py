@@ -1,14 +1,43 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from sqlglot import exp, parse_one
 from mufasa.logical_plan.expressions import Aggregate, Binary, Column, Literal
 
+if TYPE_CHECKING:
+    from ..execution.catalog import Catalog
+    from ..dataframe.dataframe import DataFrame
+
 
 class SQLParser:
-    def __init__(self, catalog):
+    """Parser for converting SQL queries to logical plans."""
+    
+    def __init__(self, catalog: Catalog) -> None:
+        """
+        Initialize SQL parser.
+        
+        Args:
+            catalog: Catalog for table lookups.
+        """
         self.catalog = catalog
 
-    def parse(self, sql):
-        ast = parse_one(sql)
-        return self.convert_ast_to_logical_plan(ast)
+    def parse(self, sql: str) -> DataFrame:
+        """
+        Parse a SQL query and return a DataFrame.
+        
+        Args:
+            sql: SQL query string.
+        
+        Returns:
+            DataFrame representing the query.
+        
+        Raises:
+            Exception: If parsing fails or query is unsupported.
+        """
+        try:
+            ast = parse_one(sql)
+            return self.convert_ast_to_logical_plan(ast)
+        except Exception as e:
+            raise ValueError(f"Failed to parse SQL query: {e}") from e
 
     def convert_ast_to_logical_plan(self, ast):
         if isinstance(ast, exp.Select):
@@ -80,7 +109,7 @@ class SQLParser:
             }
             op = op_map.get(type(expr))
             if not op:
-                Exception(f"Unsupported expression: {expr}")
+                raise ValueError(f"Unsupported expression: {expr}")
 
             return Binary(expr.key, left, op, right)
         elif isinstance(expr, exp.Alias):

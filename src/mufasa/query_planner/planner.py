@@ -1,4 +1,5 @@
-from typing import Optional, List, Union, Any
+from __future__ import annotations
+from typing import Optional, List, Union, Any, TYPE_CHECKING
 from mufasa.logical_plan.operators import Projection, Filter, Scan, GroupBy, LogicalPlan
 from mufasa.physical_plan.operators import (
     PhysicalProjection,
@@ -16,15 +17,21 @@ from mufasa.physical_plan.expressions import (
     AggregateExpr,
     PhysicalExpr,
 )
+from mufasa.optimizer.optimizer import Optimizer
+
+if TYPE_CHECKING:
+    pass
 
 
 class QueryPlanner:
     """
-    Converts a LogicalPlan into a PhysicalPlan.
+    Converts a LogicalPlan into a PhysicalPlan with optimizations.
     """
 
-    def __init__(self, logical_plan: LogicalPlan) -> None:
+    def __init__(self, logical_plan: LogicalPlan, optimize: bool = True) -> None:
         self.logical_plan = logical_plan
+        self.optimize = optimize
+        self.optimizer = Optimizer() if optimize else None
 
     def create_physical_plan(self, plan: Optional[LogicalPlan] = None) -> PhysicalPlan:
         """
@@ -38,6 +45,10 @@ class QueryPlanner:
         """
         if plan is None:
             plan = self.logical_plan
+        
+        # Apply optimizations before converting to physical plan
+        if self.optimizer:
+            plan = self.optimizer.optimize(plan)
 
         if isinstance(plan, Scan):
             return PhysicalScan(plan.datasource, plan.projection)
